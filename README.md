@@ -1,11 +1,11 @@
 # GMB_corpus_ner
 This is the repository fot the link https://www.kaggle.com/shoumikgoswami/ner-using-random-forest-and-crf
-It uses a ensemble model combines (xgboos,crf,random forest,bilist+attn+crf) and a model based on Bert(since my computer does not support trainning a model like bert,my laptop is only a macbook and I have to use the old computer in my house to use cuda , so I do not have the full result of the Bert,but the code works fine just the speed is very slow which takes a long time to see a proper result)
+It uses a ensemble model combines (xgboost,crf,random forest,bilist+attn+crf) and a model based on Bert(since my computer does not support trainning a model like bert,my laptop is only a macbook and I have to use the old computer in my house to use cuda , so I do not have the full result of the Bert,but the code works fine just the speed is very slow which takes a long time to see a proper result)
 In BiLSTM, I use the glove vector and concat it with a 50-dim vector which uses it to describe the syntax label,so the word embedding in the BiLSTM is actually 150 dim.
 
 -----------------------------------------------------------------------------------------------------
 
-Running Procedure:
+Running Procedure:  
 1.Run make_data.py which you can adjust the size of training,val,test dataset,in the experiment  I use training (2349 sentences),val (150 sentences),test (350 sentences)  
 2.Run each model's traininig script,like ner_Xgboost.py,Rf.py,CRF.py,Copy_Attn.py,it will save the model automatically  
 3.Run the vote_classifer.py to get the hard_voting result on the test dataset  
@@ -39,11 +39,12 @@ On the test set,the result gives like below:
 We see that the classifer:  
 1.reach the weighted accuracy weight of 0.959 and non weighted accuracy 0.958  
 2.reach the f1 score of 0.96  
-3.due to the severly unbalanced dataset,like I-art or I-nat could only count for 20~40 counts in this dataset that contains more than 60,000 words,therefore, event I try to balance the dataset ,due to the lack of data,all those models do not perform well on these unbalanced labels.  
+3.due to the severly unbalanced dataset,like I-art or I-nat could only count for 20~40 counts in this dataset that contains more than 60,000 words,therefore, event I try to balance the dataset using upsampling and downsampling the result did not change quite much,due to the lack of data,all those models do not perform well on these extremely unbalanced labels.  
+Since I still have to finish my graduate paper and finish at least one implementation , I did not go deeper to solove this problem , but I already have several ideas in my mind like transform the CV's focal loss into this NER problem which focal loss is used to slove a unbalanced dataset classification problem. Additionally, using Syntax Tree Analysis we can give different score to each syntax label which could help us to better recongnize the Named Entity.Also,using Knowledege Base like Yago as a resource would increase the result too.The pretrained model like Bert,XLNet could also improve the result.  
 
 -----------------------------------------------------------------------------------------------------
 
-Scirpt and file Descibe:  
+Script and file Descibe:  
 1.models_func.py，contains the all the model and function that used in the NER process  
 2.data_make.py, spilit the data under the num that you give  
 3.CRF,ner_Xgboost,Copy_Attn,Rf,Bert_BiLSTM_CRF are different scirpts that you can run    
@@ -54,7 +55,7 @@ Scirpt and file Descibe:
 8.syntax_embeds is the embedding that trained to describe the syntax label which is used to cancat with word vector.  
 9.train data,val data,test data,are the datas that spilited using make_data.py  
 
---------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 
 For Glove vector,due to its size,I can not upload it to the github,you can download it at https://nlp.stanford.edu/projects/glove/  
 I am still training a deeper BiLSTM model,since I did not adjust any hyperparameter (only a 1 layer BiLSTM with 256 hidden dims) to find a nice setting,the result still has space to raise since the BiLSTM model could be improved.  
